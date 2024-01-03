@@ -29,20 +29,7 @@ class MahasiswaList extends StatelessWidget {
       'nim' : 'NIM : 210112004',
       'semester' : 'Semester : 5',
       'jabatan': 'Div. Litbang - Ketua HIMSI 2023/2024'
-    },
-    {'name': 'Ariefah Khairinna',
-      'image': 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-      'nim' : 'NIM : 210112004',
-      'semester' : 'Semester : 5',
-      'jabatan': 'Bendahara HIMSI 2022/2023 - Div. Technopreneur 2023/2024'
-    },
-    {'name': 'Evana Anugrah P',
-      'image': 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-      'nim' : 'NIM : 220112004',
-      'semester' : 'Semester : 3',
-      'jabatan': 'Div. Humas - Wakil Ketua HIMSI 2023/2024'
-    },
-    
+    }
   ];
 
   @override
@@ -129,11 +116,23 @@ class MahasiswaList extends StatelessWidget {
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    // Navigate to the update_mahasiswa.dart screen
-                                    Navigator.pushNamed(context, '/update_mahasiswa');
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UpdateMahasiswaScreen(
+                                          mahasiswaName: mahasiswa[index]['name']!,
+                                          mahasiswaImage: mahasiswa[index]['image']!,
+                                          mahasiswaNim: mahasiswa[index]['nim']!,
+                                          mahasiswaSemester: mahasiswa[index]['semester']!,
+                                          mahasiswaJabatan: mahasiswa[index]['jabatan']!,
+                                        ),
+                                      ),
+                                    );
                                   },
+                                  tooltip: 'Edit Mahasiswa',
                                   icon: Icon(Icons.edit, color: Colors.white),
                                 ),
+
                                 IconButton(
                                   onPressed: () {
                                     // Handle delete action

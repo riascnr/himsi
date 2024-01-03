@@ -1,14 +1,30 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class AddMahasiswaScreen extends StatelessWidget {
+class AddMahasiswaScreen extends StatefulWidget {
+  @override
+  _AddMahasiswaScreenState createState() => _AddMahasiswaScreenState();
+}
+
+class _AddMahasiswaScreenState extends State<AddMahasiswaScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController nimController = TextEditingController();
   final TextEditingController semesterController = TextEditingController();
   final TextEditingController jabatanController = TextEditingController();
 
-  final List<Map<String, String>> mahasiswaList;
+  File? _image;
 
-  AddMahasiswaScreen({required this.mahasiswaList});
+  Future<void> getImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,25 +46,12 @@ class AddMahasiswaScreen extends StatelessWidget {
             SizedBox(height: 16),
             _buildTextField('Jabatan', jabatanController),
             SizedBox(height: 20),
+            _buildImagePicker(),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Implementasi logika untuk menambahkan mahasiswa ke daftar
-                // Anda dapat menyimpan data baru ke mahasiswa list atau server
-                String name = nameController.text;
-                String nim = nimController.text;
-                String semester = semesterController.text;
-                String jabatan = jabatanController.text;
-
-                Map<String, String> newMahasiswa = {
-                  'name': name,
-                  'nim': 'NIM : $nim',
-                  'semester': 'Semester : $semester',
-                  'jabatan': jabatan,
-                };
-
-                mahasiswaList.add(newMahasiswa);
-
-                Navigator.pop(context); // Kembali ke layar sebelumnya setelah menambahkan mahasiswa
+                // Implement your logic to add a student with the entered data and the selected image
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 primary: Color.fromARGB(255, 0, 72, 131),
@@ -84,6 +87,33 @@ class AddMahasiswaScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Color.fromARGB(255, 0, 72, 131), width: 2),
         ),
+      ),
+    );
+  }
+
+  Widget _buildImagePicker() {
+    return GestureDetector(
+      onTap: getImage,
+      child: Container(
+        width: double.infinity,
+        height: 100,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: _image == null
+            ? Center(
+                child: Text(
+                  'Pilih Foto',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              )
+            : Image.file(
+                _image!,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }

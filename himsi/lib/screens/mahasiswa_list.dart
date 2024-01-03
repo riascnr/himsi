@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:himsi/screens/mahasiswa_detail.dart';
 import 'package:himsi/screens/add_mahasiswa.dart';
+import 'package:himsi/screens/update_mahasiswa.dart';
 
 class MahasiswaList extends StatelessWidget {
 
@@ -109,11 +110,11 @@ class MahasiswaList extends StatelessWidget {
                             SizedBox(height: 8),
                             Image.network(
                               mahasiswa[index]['image']!,
-                              height: 100,
-                              width: 100,
+                              height: 90,
+                              width: 90,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 8),
                             Text(
                               mahasiswa[index]['jabatan']!,
                               style: TextStyle(
@@ -123,44 +124,27 @@ class MahasiswaList extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 8),
-                          // Ikon Edit
-                          IconButton(
-                            icon: Icon(Icons.edit, color: Colors.white),
-                            onPressed: () {
-                              // Navigasi ke layar edit mahasiswa
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddMahasiswaScreen(
-                                    mahasiswaList: mahasiswa,
-                                    isEditing: true,
-                                    editedIndex: index,
-                                  ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    // Navigate to the update_mahasiswa.dart screen
+                                    Navigator.pushNamed(context, '/update_mahasiswa');
+                                  },
+                                  icon: Icon(Icons.edit, color: Colors.white),
                                 ),
-                              );
-                            },
-                          ),
-
-                          // Ikon Delete
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.white),
-                            onPressed: () {
-                              // Hapus data mahasiswa dari daftar
-                              mahasiswa.removeAt(index);
-                              // Membangun ulang widget untuk merefresh tampilan
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Mahasiswa dihapus'),
-                                  duration: Duration(seconds: 2),
+                                IconButton(
+                                  onPressed: () {
+                                    // Handle delete action
+                                    // You can show a confirmation dialog, and if confirmed, delete the item
+                                  },
+                                  icon: Icon(Icons.delete, color: Colors.white),
                                 ),
-                              );
-                              // Membangun ulang widget untuk merefresh tampilan
-                              // Note: Penggunaan ScaffoldMessenger untuk menunjukkan SnackBar karena Scaffold tidak tersedia di sini
-                              // https://flutter.dev/docs/cookbook/design/snackbars
-                              Scaffold.of(context).setState(() {});
-                            },
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -192,20 +176,17 @@ class MahasiswaList extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
+            
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigasi ke layar tambah mahasiswa
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => AddMahasiswaScreen(
-                mahasiswaList: mahasiswa,
-                isEditing: false,
-              ),
-            ),
+            MaterialPageRoute(builder: (context) => AddMahasiswaScreen()),
           );
         },
         tooltip: 'Tambah Mahasiswa',

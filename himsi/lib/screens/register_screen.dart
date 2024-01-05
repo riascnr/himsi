@@ -1,12 +1,33 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart';
+import 'package:himsi/api_manager.dart';
+import 'package:provider/provider.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  void _register(BuildContext context) async {
+    final apiManager = Provider.of<ApiManager>(context, listen: false);
+    final name = usernameController.text;
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    try {
+      await apiManager.register(name, email, password);
+      // Show a toast on successful registration
+
+      Navigator.pushReplacementNamed(context, '/login');
+      print('Success');
+      // Handle successful registration
+    } catch (e) {
+      print('Registration failed. Error: $e');
+      // Handle registration failure
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,19 +80,7 @@ class RegisterScreen extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Add your registration logic here
-                String username = usernameController.text;
-                String email = emailController.text;
-                String password = passwordController.text;
-
-                // Replace the following with your registration logic
-                // You can add validation, error handling, and registration code here
-
-                // For demonstration purposes, navigate to the login screen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()), // Replace with your login screen
-                );
+                _register(context);
               },
               style: ElevatedButton.styleFrom(
                 primary: Color.fromARGB(255, 0, 72, 131),

@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'logohimsi.png', 
+              'assets/logohimsi.png', 
               width: 100.0, // Sesuaikan dengan ukuran yang diinginkan
               height: 100.0,
             ),

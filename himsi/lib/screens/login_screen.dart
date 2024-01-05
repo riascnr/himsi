@@ -1,10 +1,30 @@
+import 'package:himsi/api_manager.dart';
 import 'package:himsi/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'mahasiswa_list.dart';
+import 'package:himsi/user_manager.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  void _authenticate(BuildContext context) async {
+    final apiManager = Provider.of<ApiManager>(context, listen: false);
+    final userManager = Provider.of<UserManager>(context, listen: false);
+
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    try {
+      final token = await apiManager.login(email, password);
+      userManager.setAuthToken(token);
+      print('login success');
+      Navigator.pushReplacementNamed(context, '/mahasiswalist');
+    } catch (e) {
+      print('Authentication failed. Error: $e');
+      // Handle authentication failure
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +66,7 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Replace the following with your actual authentication logic
-                bool isAuthenticated = true; // Change this based on your logic
-
-                // Navigate to DashboardScreen if authenticated, else do nothing
-                if (isAuthenticated) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => MahasiswaList()),
-                  );
-                }
+                 _authenticate(context);
               },
               style: ElevatedButton.styleFrom(
                 primary: Color.fromARGB(255, 0, 72, 131), // Change this line to set the button color to black

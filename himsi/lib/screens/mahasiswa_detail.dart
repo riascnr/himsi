@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MahasiswaDetail extends StatelessWidget {
+  final String mahasiswaId;
   final String mahasiswaName;
   final String mahasiswaImage;
   final String mahasiswaNim;
@@ -8,6 +9,7 @@ class MahasiswaDetail extends StatelessWidget {
   final String mahasiswaJabatan;
   
   MahasiswaDetail({
+    required this.mahasiswaId,
     required this.mahasiswaName,
     required this.mahasiswaImage,
     required this.mahasiswaNim,

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class AddMahasiswaScreen extends StatefulWidget {
   @override
@@ -24,6 +25,30 @@ class _AddMahasiswaScreenState extends State<AddMahasiswaScreen> {
         _image = File(pickedFile.path);
       }
     });
+  }
+
+  Future<void> addMahasiswa() async {
+    final uri = Uri.parse('http://127.0.0.1:8000/mahasiswa');
+    final request = http.MultipartRequest('POST', uri);
+
+    request.fields['name'] = nameController.text;
+    request.fields['nim'] = nimController.text;
+    request.fields['semester'] = semesterController.text;
+    request.fields['jabatan'] = jabatanController.text;
+
+    if (_image != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
+    }
+
+    final response = await request.send();
+
+    if (response.statusCode == 201) {
+      // If the Mahasiswa is added successfully, pop the screen
+      Navigator.pop(context);
+    } else {
+      // Handle the error
+      print('Error adding Mahasiswa: ${response.reasonPhrase}');
+    }
   }
 
   @override

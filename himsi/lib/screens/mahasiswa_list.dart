@@ -1,39 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:himsi/api_manager.dart';
+// import 'package:himsi/user_manager.dart';
+// import 'package:http/http.dart' as http;
 import 'package:himsi/screens/mahasiswa_detail.dart';
 import 'package:himsi/screens/add_mahasiswa.dart';
-import 'package:himsi/screens/update_mahasiswa.dart';
+// import 'package:himsi/screens/update_mahasiswa.dart';
+import 'package:provider/provider.dart';
 
 class MahasiswaList extends StatelessWidget {
-
-  final List<Map<String, String>> mahasiswa = [
-    {'name': 'Kiki Alfaini Nurrizki',
-      'image': 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-      'nim' : 'NIM : 200112004',
-      'semester' : 'Semester : 7',
-      'jabatan': 'Ketua HIMSI 2022/2023'
-    },
-    {'name': 'Azkiyatun Nadroh',
-      'image': 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-      'nim' : 'NIM : 200112004',
-      'semester' : 'Semester : 7',
-      'jabatan': 'Sekretaris HIMSI 2023/2024'
-    },
-    {'name': 'Ria Suci Nurhalizah',
-      'image': 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-      'nim' : 'NIM : 210112004',
-      'semester' : 'Semester : 5',
-      'jabatan': 'Wakil ketua HIMSI 2022/2023'
-    },
-    {'name': 'Ulan Juniarti',
-      'image': 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-      'nim' : 'NIM : 210112004',
-      'semester' : 'Semester : 5',
-      'jabatan': 'Div. Litbang - Ketua HIMSI 2023/2024'
-    }
-  ];
-
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Mahasiswa(),
+    );
+  }
+} 
+
+class Mahasiswa extends StatefulWidget {
+  @override
+  _MahasiswaList createState() => _MahasiswaList();
+}
+
+
+class _MahasiswaList extends State<Mahasiswa> {
+  @override
+  Widget build(BuildContext context) {
+    // final userManager = Provider.of<UserManager>(context);
+    final apiManager = Provider.of<ApiManager>(context, listen: false);
+    final url = "http://192.168.114.104:8000/img/";
+
+    return FutureBuilder<Map<String, dynamic>>(
+  future: apiManager.fetchData(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return CircularProgressIndicator();
+    } else if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    }
+
+    final maha = snapshot.data!;
+    final mahasiswa = maha['mahasiswa'];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Dashboard'),
@@ -50,27 +57,31 @@ class MahasiswaList extends StatelessWidget {
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                ),
-                itemCount: mahasiswa.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
+            if(mahasiswa!.isNotEmpty)
+            for(var data in mahasiswa)
+
+            // Expanded(
+            //   child: GridView.builder(
+            //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //       crossAxisCount: 2,
+            //       crossAxisSpacing: 16.0,
+            //       mainAxisSpacing: 16.0,
+            //     ),
+            //     itemCount: mahasiswa?.length ?? 0,
+            //     itemBuilder: (context, index) {
+            //       return 
+                  InkWell(
                     onTap: () {
-                      // Navigate to the mahasiswa detail screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MahasiswaDetail (
-                            mahasiswaName: mahasiswa[index]['name']!,
-                            mahasiswaImage: mahasiswa[index]['image']!,
-                            mahasiswaNim: mahasiswa[index]['nim']!,
-                            mahasiswaSemester: mahasiswa[index]['semester']!,
-                            mahasiswaJabatan: mahasiswa[index]['jabatan']!,
+                          builder: (context) => MahasiswaDetail(
+                            mahasiswaId: data['id'],
+                            mahasiswaName: data['name'],
+                            mahasiswaImage: data['image'],
+                            mahasiswaNim: data['nim'],
+                            mahasiswaSemester: data['semester'],
+                            mahasiswaJabatan: data['jabatan'],
                           ),
                         ),
                       );
@@ -87,7 +98,7 @@ class MahasiswaList extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              mahasiswa[index]['name']!,
+                              data['name'],
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -96,14 +107,14 @@ class MahasiswaList extends StatelessWidget {
                             ),
                             SizedBox(height: 8),
                             Image.network(
-                              mahasiswa[index]['image']!,
+                              "$url${data['image']}",
                               height: 50,
                               width: 50,
                               fit: BoxFit.cover,
                             ),
                             SizedBox(height: 8),
                             Text(
-                              mahasiswa[index]['jabatan']!,
+                              data['jabatan'],
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
@@ -116,27 +127,14 @@ class MahasiswaList extends StatelessWidget {
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => UpdateMahasiswaScreen(
-                                          mahasiswaName: mahasiswa[index]['name']!,
-                                          mahasiswaImage: mahasiswa[index]['image']!,
-                                          mahasiswaNim: mahasiswa[index]['nim']!,
-                                          mahasiswaSemester: mahasiswa[index]['semester']!,
-                                          mahasiswaJabatan: mahasiswa[index]['jabatan']!,
-                                        ),
-                                      ),
-                                    );
+                                    // Handle edit action
                                   },
                                   tooltip: 'Edit Mahasiswa',
                                   icon: Icon(Icons.edit, color: Colors.white),
                                 ),
-
                                 IconButton(
                                   onPressed: () {
                                     // Handle delete action
-                                    // You can show a confirmation dialog, and if confirmed, delete the item
                                   },
                                   icon: Icon(Icons.delete, color: Colors.white),
                                 ),
@@ -146,10 +144,12 @@ class MahasiswaList extends StatelessWidget {
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
+            //       );
+            //     },
+            //   ),
+             ),
+
+
           ],
         ),
       ),
@@ -175,14 +175,11 @@ class MahasiswaList extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            
           ],
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigasi ke layar tambah mahasiswa
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddMahasiswaScreen()),
@@ -192,5 +189,8 @@ class MahasiswaList extends StatelessWidget {
         child: Icon(Icons.add),
       ),
     );
+  },
+);
+
   }
 }

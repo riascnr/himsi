@@ -157,6 +157,18 @@ Future<dynamic> addmahasiswa(
     }
   }
 
+  Future<Map<String, dynamic>> fetchData() async {
+    final response = await http.get(Uri.parse('$baseUrl/mahasiswa'));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+
+      return jsonResponse;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
 
   // Future<void> login2(String email, String password) async {
   //   final response = await http.post(

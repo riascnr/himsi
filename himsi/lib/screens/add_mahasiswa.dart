@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:himsi/api_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class AddMahasiswaScreen extends StatefulWidget {
   @override
@@ -28,26 +30,22 @@ class _AddMahasiswaScreenState extends State<AddMahasiswaScreen> {
   }
 
   Future<void> addMahasiswa() async {
-    final uri = Uri.parse('http://127.0.0.1:8000/mahasiswa');
-    final request = http.MultipartRequest('POST', uri);
+    final apiManager = Provider.of<ApiManager>(context, listen: false);
 
-    request.fields['name'] = nameController.text;
-    request.fields['nim'] = nimController.text;
-    request.fields['semester'] = semesterController.text;
-    request.fields['jabatan'] = jabatanController.text;
+    final response = await apiManager.addmahasiswa(
+      nameController.text,
+      nimController.text,
+      semesterController.text,
+      jabatanController.text,
+      _image!,
+    );
 
-    if (_image != null) {
-      request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
-    }
-
-    final response = await request.send();
-
-    if (response.statusCode == 201) {
-      // If the Mahasiswa is added successfully, pop the screen
+    if (response == 201) {
+      // Jika Mahasiswa berhasil ditambahkan, kembali ke halaman sebelumnya
       Navigator.pop(context);
     } else {
-      // Handle the error
-      print('Error adding Mahasiswa: ${response.reasonPhrase}');
+      // Tangani kesalahan
+      print('Error menambahkan Mahasiswa: $response');
     }
   }
 
@@ -76,7 +74,7 @@ class _AddMahasiswaScreenState extends State<AddMahasiswaScreen> {
             ElevatedButton(
               onPressed: () {
                 // Implement your logic to add a student with the entered data and the selected image
-                Navigator.pop(context);
+                addMahasiswa();
               },
               style: ElevatedButton.styleFrom(
                 primary: Color.fromARGB(255, 0, 72, 131),

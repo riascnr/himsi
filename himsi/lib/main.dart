@@ -7,15 +7,15 @@ import 'screens/mahasiswa_list.dart';
 import 'screens/add_mahasiswa.dart';
 import 'api_manager.dart';
 import 'user_manager.dart';
-import 'screens/update_mahasiswa.dart';
-import 'screens/mahasiswa_detail.dart';
+// import 'screens/update_mahasiswa.dart';
+// import 'screens/mahasiswa_detail.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final ApiManager apiManager = ApiManager(baseUrl: 'http://192.168.114.104:8000/api');
+  final ApiManager apiManager = ApiManager(baseUrl: 'http://10.10.24.4:8000/api');
 
   @override
   Widget build(BuildContext context) {

@@ -57,13 +57,11 @@ Future<dynamic> addmahasiswa(
       ..headers['Content-Type'] = 'application/json';
 
     var response = await request.send();
-    var responseBody = await response.stream.bytesToString();
 
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(responseBody);
-      return jsonResponse['message'];
+    if (response.statusCode == 201) {
+      return response.statusCode;
     } else {
-      return 'Failed to add mahasiswa. Status Code: ${response.statusCode}';
+      return 'Failed to add mahasiswa. Status Code: ${response.statusCode}, ${response}';
     }
   }
 
@@ -122,7 +120,7 @@ Future<dynamic> addmahasiswa(
   }
 
   Future<int?> deletemahasiswa(int id) async {
-    final token = await storage.read(key: 'kode_rahassia');
+    final token = await storage.read(key: 'auth_token');
      final response = await http.delete(
       Uri.parse('$baseUrl/mahasiswa'),
       headers: {'Authorization': 'Bearer $token'},
@@ -230,7 +228,7 @@ Future<dynamic> addmahasiswa(
       final token = jsonResponse['token'];
 
       // Save the token securely
-      await storage.write(key: 'kode_rahassia', value: token);
+      await storage.write(key: 'auth_token', value: token);
 
       return token;
     } else {

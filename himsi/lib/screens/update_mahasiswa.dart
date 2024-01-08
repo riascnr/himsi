@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:himsi/api_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+// import 'package:provider/provider.dart';
 
 
 class UpdateMahasiswaScreen extends StatefulWidget {
@@ -152,29 +153,30 @@ class _UpdateMahasiswaScreenState extends State<UpdateMahasiswaScreen> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.grey),
         ),
-        child: _image == null
-            ? Center(
-                child: 
-                Image.network(
-                  "http://10.10.24.4:8000/img/${imageController.text}",
-                  height: 200,
-                  width: 200,
-                  fit: BoxFit.cover,
-                ),
-                
-              )
-            : Image.file(
-                _image!,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-              ),
+        child: Center(
+                        child: _image != null
+                            ? Image.file(_image!, fit: BoxFit.cover)
+                            : Image.network(
+                                "http://10.10.24.4:8000/img/${widget.mahasiswaImage}" ??
+                                    '',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+                      ),
       ),
     );
   }
 
   Future<void> getImage() async {
-    // Implement the logic to select an image from the gallery
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
   }
 
   @override

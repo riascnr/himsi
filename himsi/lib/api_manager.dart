@@ -127,7 +127,7 @@ Future<dynamic> addmahasiswa(
       request.fields['nim'] = nim;
       request.fields['semester'] = semester;
       request.fields['jabatan'] = jabatan;
-      request.files.add(await http.MultipartFile.fromPath('foto', foto.path));
+      request.files.add(await http.MultipartFile.fromPath('image', foto.path));
 
       var response = await request.send();
 

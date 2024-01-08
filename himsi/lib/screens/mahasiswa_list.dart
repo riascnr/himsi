@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:himsi/api_manager.dart';
 import 'package:himsi/screens/mahasiswa_detail.dart';
 import 'package:himsi/screens/add_mahasiswa.dart';
+import 'package:himsi/screens/update_mahasiswa.dart';
 import 'package:provider/provider.dart';
 
 class MahasiswaList extends StatelessWidget {
@@ -61,11 +62,11 @@ class _MahasiswaList extends State<Mahasiswa> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => MahasiswaDetail(
-                                mahasiswaId: data['id'],
+                                mahasiswaId: data['id'].toString(),
                                 mahasiswaName: data['name'],
                                 mahasiswaImage: data['image'],
                                 mahasiswaNim: data['nim'],
-                                mahasiswaSemester: data['semester'],
+                                mahasiswaSemester: data['semester'].toString(),
                                 mahasiswaJabatan: data['jabatan'],
                               ),
                             ),
@@ -79,44 +80,69 @@ class _MahasiswaList extends State<Mahasiswa> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Column(
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text(
-                                  data['name'],
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
+                                // Gambar di sebelah kiri
                                 Image.network(
                                   "http://10.10.24.4:8000/img/${data['image']}",
                                   height: 50,
                                   width: 50,
                                   fit: BoxFit.cover,
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  data['jabatan'],
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                SizedBox(width: 16), // Jarak antara gambar dan teks
+                                // Teks di sebelah kanan
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        data['name'],
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        data['jabatan'],
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                SizedBox(height: 8),
+                                SizedBox(width: 8), // Jarak antara teks dan ikon
+                                // Tombol aksi (edit dan delete)
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        // Handle edit action
-                                      },
-                                      tooltip: 'Edit Mahasiswa',
-                                      icon: Icon(Icons.edit, color: Colors.white),
-                                    ),
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => UpdateMahasiswaScreen(
+                                                mahasiswaId: data['id'].toString(),
+                                                mahasiswaName: data['name'],
+                                                mahasiswaImage: data['image'],
+                                                mahasiswaNim: data['nim'],
+                                                mahasiswaSemester: data['semester'],
+                                                mahasiswaJabatan: data['jabatan'], 
+                                                apiManager: apiManager,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        tooltip: 'Edit Mahasiswa',
+                                        icon: Icon(Icons.edit, color: Colors.white),
+                                      ),
+
+                                    //delete
                                     IconButton(
                                       onPressed: () async {
                                         showDialog(
@@ -149,6 +175,7 @@ class _MahasiswaList extends State<Mahasiswa> {
                             ),
                           ),
                         ),
+
                       ),
                 ],
               ),

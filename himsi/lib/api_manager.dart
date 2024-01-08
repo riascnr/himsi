@@ -113,11 +113,72 @@ Future<dynamic> addmahasiswa(
         'image': image,
       },
     );
-
     if (response.statusCode != 200) {
       throw Exception('Failed to update mahasiswa');
     }
   }
+    
+
+  Future<String?> UpdateWithFoto(String id, String name, String nim, String semester, String jabatan, File foto) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/mahasiswaaa'));
+      request.fields['id'] = id;
+      request.fields['name'] = name;
+      request.fields['nim'] = nim;
+      request.fields['semester'] = semester;
+      request.fields['jabatan'] = jabatan;
+      request.files.add(await http.MultipartFile.fromPath('foto', foto.path));
+
+      var response = await request.send();
+
+      if (response.statusCode == 201) {
+        return "${response.statusCode}";
+      } else {
+        throw Exception('Failed Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in UpdateWithFoto: $e');
+      throw e;
+    }
+  }
+
+  Future<void> UpdateWithoutFoto(
+    String id,
+    String name,
+    String nim,
+    String semester,
+    String jabatan,
+  ) async {
+    try {
+      // final token = await getToken();
+      final response = await http.post(
+        Uri.parse('$baseUrl/mahasiswaaa'),
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'id': id,
+          'name': name,
+          'nim': nim,
+          'semester': semester,
+          'jabatan': jabatan,
+        }),
+      );
+
+      print("Status Code: ${response.statusCode}, ${response.body}");
+
+      if (response.statusCode != 201) {
+        throw Exception(
+            'Failed to update tip. Status Code: ${response.statusCode}, ${response.body}');
+      }
+    } catch (e) {
+      print('Error in updateTip: $e');
+      throw e;
+    }
+  }
+
+    
 
   Future<int?> deletemahasiswa(int id) async {
     final token = await storage.read(key: 'auth_token');

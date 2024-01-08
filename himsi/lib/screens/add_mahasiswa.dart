@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:himsi/api_manager.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class AddMahasiswaScreen extends StatefulWidget {

@@ -278,22 +278,31 @@ Future<dynamic> addmahasiswa(
 }
 
 
-  Future<String?> authenticate(String email, String password) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/login'),
-      body: {'email': email, 'password': password},
-    );
+  Future<dynamic> authenticate(String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/login'),
+        body: {'email': email, 'password': password},
+      );
 
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      final token = jsonResponse['token'];
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final token = jsonResponse['token'];
+        final role = jsonResponse['role'];
 
-      // Save the token securely
-      await storage.write(key: 'auth_token', value: token);
+        await storage.write(key: 'kode_rahassia', value: token);
 
-      return token;
-    } else {
-      throw Exception('Failed to authenticate');
+        return {
+          'token': token,
+          'role': role,
+        };
+      } else {
+        throw Exception(
+            'Failed to authenticate. Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in authenticate: $e');
+      throw e;
     }
   }
 }

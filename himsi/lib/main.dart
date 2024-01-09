@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:himsi/screens/user_screen.dart';
 import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => RegisterScreen(),
           '/mahasiswalist': (context) => MahasiswaList(),
           '/addmahasiswa': (context) => AddMahasiswaScreen(),
+          '/user': (context) => User(),
           // '/updatemahasiswa': (context) => UpdateMahasiswaScreen(),
           // '/detailmahasiswa': (context) => MahasiswaDetail(),
         },

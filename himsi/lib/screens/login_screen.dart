@@ -16,13 +16,32 @@ class LoginScreen extends StatelessWidget {
     final password = passwordController.text;
 
     try {
-      final token = await apiManager.login(email, password);
-      userManager.setAuthToken(token);
-      print('login success');
-      Navigator.pushReplacementNamed(context, '/mahasiswalist');
+      final res = await apiManager.authenticate(email, password);
+      final token = res['token'];
+      final role = res['role'];
+      userManager.setAuthToken(res['token']);
+
+      if (role == 'user') {
+        Navigator.pushReplacementNamed(context, '/user');
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login successful'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      }else if (role == 'admin'){
+        Navigator.pushReplacementNamed(context, '/mahasiswalist');
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login successful'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      }
     } catch (e) {
       print('Authentication failed. Error: $e');
       // Handle authentication failure
+      // You can also show an error message using SnackBar here if needed
     }
   }
 

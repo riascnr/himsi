@@ -18,12 +18,25 @@ class RegisterScreen extends StatelessWidget {
 
     try {
       await apiManager.register(name, email, password);
-      // Show a toast on successful registration
+      // Show a success Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Registration successful!'),
+          backgroundColor: Colors.green,
+        ),
+      );
 
       Navigator.pushReplacementNamed(context, '/login');
       print('Success');
       // Handle successful registration
     } catch (e) {
+      // Show an error Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Registration failed. Error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
       print('Registration failed. Error: $e');
       // Handle registration failure
     }
@@ -44,8 +57,8 @@ class RegisterScreen extends StatelessWidget {
             TextFormField(
               controller: usernameController,
               decoration: InputDecoration(
-                labelText: 'Username',
-                hintText: 'Enter your username',
+                labelText: 'Name',
+                hintText: 'Enter your name',
                 prefixIcon: Icon(Icons.person),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
